@@ -1,48 +1,51 @@
 package src.java.com.lab.draw;
+import src.java.com.lab.lab1.Vehicle;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.util.HashMap;
+import java.util.ArrayList;
 
 // This panel represents the animated part of the view with the car images.
 
 public class DrawPanel extends JPanel{
 
-    // Just a single image, TODO: Generalize
-    BufferedImage volvoImage;
-    // To keep track of a single car's position
-    Point volvoPoint = new Point();
-
-    BufferedImage volvoWorkshopImage;
-    Point volvoWorkshopPoint = new Point(300,300);
-
-    // TODO: Make this general for all cars
-    void moveit(int x, int y){
-        volvoPoint.x = x;
-        volvoPoint.y = y;
-    }
+    private final HashMap<String, BufferedImage> carImages = new HashMap<>();
+    private ArrayList<Vehicle> cars = new ArrayList<>();
+    private final HashMap<Vehicle, Point> carPositions = new HashMap<>();
 
     // Initializes the panel and reads the images
     public DrawPanel(int x, int y) {
         this.setDoubleBuffered(true);
         this.setPreferredSize(new Dimension(x, y));
         this.setBackground(Color.green);
-        // Print an error message in case file is not found with a try/catch block
-        try {
-            // You can remove the "src.java.com.lab.draw.pics" part if running outside of IntelliJ and
-            // everything is in the same main folder.
-            // volvoImage = ImageIO.read(new File("Volvo240.jpg"));
+        loadCarImages();
 
-            // Rememember to rightclick src New -> Package -> name: src.java.com.lab.draw.pics -> MOVE *.jpg to src.java.com.lab.draw.pics.
-            // if you are starting in IntelliJ.
-            volvoImage = ImageIO.read(DrawPanel.class.getResourceAsStream("pics/Volvo240.jpg"));
-            volvoWorkshopImage = ImageIO.read(DrawPanel.class.getResourceAsStream("pics/VolvoBrand.jpg"));
-        } catch (IOException ex)
-        {
+    }
+
+    // TODO: Make this general for all cars
+    public void moveit(Vehicle car, int x, int y){
+        carPositions.put(car, new Point(x,y));
+        repaint();
+    }
+    public void setCars(ArrayList<Vehicle> cars) {
+        this.cars = cars;
+        // Initialize positions if they don't exist
+        for (Vehicle car : cars) {
+            carPositions.putIfAbsent(car, new Point((int) car.getXPos(), (int) car.getYPos()));
+        }
+        repaint();
+    }
+    private void loadCarImages() {
+        try {
+            carImages.put("Volvo240", ImageIO.read(DrawPanel.class.getResourceAsStream("pics/Volvo240.jpg")));
+            carImages.put("Saab95", ImageIO.read(DrawPanel.class.getResourceAsStream("pics/Saab95.jpg")));
+            carImages.put("Scania", ImageIO.read(DrawPanel.class.getResourceAsStream("pics/Scania.jpg")));
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
-
     }
 
     // This method is called each time the panel updates/refreshes/repaints itself
@@ -50,7 +53,12 @@ public class DrawPanel extends JPanel{
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(volvoImage, volvoPoint.x, volvoPoint.y, null); // see javadoc for more info on the parameters
-        g.drawImage(volvoWorkshopImage, volvoWorkshopPoint.x, volvoWorkshopPoint.y, null);
+        for (Vehicle car : cars) {
+            BufferedImage carImage = carImages.get(car.getModelName());
+            Point position = carPositions.getOrDefault(car, new Point(0, 0));
+            if (carImage != null) {
+                g.drawImage(carImage, position.x, position.y, null);
+            }
+        }
     }
 }

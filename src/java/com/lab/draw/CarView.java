@@ -1,7 +1,10 @@
 package src.java.com.lab.draw;
 
+import src.java.com.lab.lab1.Vehicle;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * This class represents the full view of the MVC pattern of your car simulator.
@@ -96,6 +99,10 @@ public class CarView extends JFrame{
         // This actionListener is for the gas button only
         // TODO: Create more for each component as necessary
         gasButton.addActionListener(_ -> carC.gas(gasAmount));
+        brakeButton.addActionListener(_ -> carC.brake(gasAmount));
+        startButton.addActionListener(_-> carC.startButton());
+
+
 
         // Make the frame pack all it's components by respecting the sizes if possible.
         this.pack();
@@ -108,5 +115,9 @@ public class CarView extends JFrame{
         this.setVisible(true);
         // Make sure the frame exits when "x" is pressed
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+    public void updateCars(ArrayList<Vehicle> cars) {
+        drawPanel.setCars(cars);
+        drawPanel.repaint();
     }
 }
