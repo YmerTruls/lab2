@@ -9,8 +9,8 @@ public abstract class TransportTruck extends Truck {
     private final ArrayList<Car> loadedCars;
     private final OnOffLift transportLift;
 
-    public TransportTruck(int nrDoors, double enginePower, Color color, String modelName, int capacity) {
-        super(nrDoors, enginePower, color, modelName);
+    public TransportTruck(int nrDoors, double enginePower, Color color, String modelName, int capacity, double xPos, double yPos) {
+        super(nrDoors, enginePower, color, modelName, xPos, yPos);
         this.loadedCars = new ArrayList<>();
         this.capacity = capacity;
         this.transportLift = new OnOffLift();

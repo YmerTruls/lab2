@@ -16,10 +16,7 @@ public class OnOffLift implements Ramp {
     public void raiseRamp(){
         rampState = false;
     }
-    public void lowerRamp(){
-        rampState = true;
 
-    }
-
+    public void lowerRamp(){ rampState = true; }
 
 }

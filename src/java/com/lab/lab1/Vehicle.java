@@ -11,17 +11,18 @@ public abstract class Vehicle implements Movable {
     private final String modelName; // The car model name
     private boolean engineState;
 
-    private double xPos = 0; //X-position
-    private double yPos = 0; //Y-position
+    private double xPos; //X-position
+    private double yPos; //Y-position
     private int currentDirection = 1; //current facing direction
     public abstract double speedFactor();
 
-    public Vehicle(int nrDoors, double enginePower, Color color, String modelName) {
+    public Vehicle(int nrDoors, double enginePower, Color color, String modelName, double xPos, double yPos) {
         this.nrDoors = nrDoors;
         this.enginePower = enginePower;
         this.color = color;
         this.modelName = modelName;
-        setEngineState(true);
+        this.xPos = xPos;
+        this.yPos = yPos;
     }
 
     public double getXPos(){
@@ -116,8 +117,8 @@ public abstract class Vehicle implements Movable {
             default -> throw new
                     IllegalStateException("Unexpected value (getCurrentDirection): " + getCurrentDirection());
         }
-        System.out.println("xPos: " + xPos);
-        System.out.println("yPos: " + yPos);
+        System.out.println("xPos: " + xPos + this);
+        System.out.println("yPos: " + yPos + this);
     }
 
     public void gas(double amount){

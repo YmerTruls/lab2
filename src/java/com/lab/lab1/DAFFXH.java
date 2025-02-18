@@ -4,11 +4,8 @@ import java.awt.Color;
 
 public class DAFFXH extends TransportTruck {
 
-    public DAFFXH() {
-        super(6,70,Color.blue,"DafXH", 6);
+    public DAFFXH(double xPos, double yPos) {
+        super(6,70,Color.blue,"DAFFXH", 6, xPos, yPos);
         setRampDown(false);
     }
-
-
-
 }

@@ -1,5 +1,6 @@
 package src.java.com.lab.draw;
 
+import java.awt.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,9 +33,10 @@ public class CarController {
         // Instance of this class
         CarController cc = new CarController();
 
-        cc.cars.add(new Volvo240());
-        cc.cars.add(new Saab95());
-        cc.cars.add(new Scania());
+        cc.cars.add(new Volvo240(0, 0));
+        cc.cars.add(new Saab95(0,60));
+        cc.cars.add(new Scania(0,120));
+        cc.cars.add(new DAFFXH(0, 180));
 
         // Start a new view and send a reference of self
         cc.frame = new CarView("CarSim 1.0", cc);
@@ -76,4 +78,19 @@ public class CarController {
             car.setEngineState(true);
         }
     }
+
+    void stopButton() {
+        for (Vehicle car : cars) {
+            car.setEngineState(false);
+        }
+    }
+    void turboOn() {
+        for (Vehicle car : cars) {
+            if (car.getModelName() == "") {
+
+            }
+
+        }
+    }
+    //void detectWall
 }

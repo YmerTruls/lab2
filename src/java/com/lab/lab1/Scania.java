@@ -6,8 +6,12 @@ public class Scania extends Truck {
 
     private final AngularLift scaniaLift;
 
-    public Scania(){
-        super(2,200, Color.YELLOW, "src.java.com.lab.Scania");
+    public Scania(double xPos, double yPos){
+        super(2,200,
+                Color.YELLOW,
+                "Scania",
+                xPos, yPos);
+        //System.out.println("Scania Initiated");
         setEngineState(false);
         scaniaLift = new AngularLift(0, 70);
     }
