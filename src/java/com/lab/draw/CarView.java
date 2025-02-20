@@ -1,6 +1,6 @@
 package src.java.com.lab.draw;
 
-import src.java.com.lab.lab1.Vehicle;
+import src.java.com.lab.lab1.Positionable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,20 +8,20 @@ import java.util.ArrayList;
 
 /**
  * This class represents the full view of the MVC pattern of your car simulator.
- * It initializes with being center on the screen and attaching it's controller in it's state.
+ * It initializes with being center on the screen and attaching its controller in its state.
  * It communicates with the Controller by calling methods of it when an action fires of in
- * each of it's components.
- * TODO: Write more actionListeners and wire the rest of the buttons
+ * each of its components.
  **/
 
 public class CarView extends JFrame{
     private static final int X = 800;
     private static final int Y = 800;
-
+    private static final int drawPanelX = X;
+    private static final int drawPanelY = Y-240;
     // The controller member
     CarController carC;
 
-    DrawPanel drawPanel = new DrawPanel(X, Y-240);
+    DrawPanel drawPanel = new DrawPanel(drawPanelX, drawPanelY); // Draw panel is where the cars move around.
 
     JPanel controlPanel = new JPanel();
 
@@ -34,7 +34,7 @@ public class CarView extends JFrame{
     JButton brakeButton = new JButton("Brake");
     JButton turboOnButton = new JButton("Saab Turbo on");
     JButton turboOffButton = new JButton("Saab Turbo off");
-    JButton liftBedButton = new JButton("Scania Lift Bed");
+    JButton RaiseBedButton = new JButton("Raise Lift Bed");
     JButton lowerBedButton = new JButton("Lower Lift Bed");
 
     JButton startButton = new JButton("Start all cars");
@@ -46,6 +46,9 @@ public class CarView extends JFrame{
         initComponents(framename);
     }
 
+    int getDrawPanelX(){ return drawPanelX; }
+    int getDrawPanelY(){ return drawPanelY; }
+
     // Sets everything in place and fits everything
     // TODO: Take a good look and make sure you understand how these methods and components work
     private void initComponents(String title) {
@@ -55,8 +58,6 @@ public class CarView extends JFrame{
         this.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
         this.add(drawPanel);
-
-
 
         SpinnerModel spinnerModel =
                 new SpinnerNumberModel(0, //initial value
@@ -76,7 +77,7 @@ public class CarView extends JFrame{
 
         controlPanel.add(gasButton, 0);
         controlPanel.add(turboOnButton, 1);
-        controlPanel.add(liftBedButton, 2);
+        controlPanel.add(RaiseBedButton, 2);
         controlPanel.add(brakeButton, 3);
         controlPanel.add(turboOffButton, 4);
         controlPanel.add(lowerBedButton, 5);
@@ -102,10 +103,10 @@ public class CarView extends JFrame{
         brakeButton.addActionListener(_ -> carC.brake(gasAmount));
         startButton.addActionListener(_-> carC.startButton());
         stopButton.addActionListener((_-> carC.stopButton()));
-        turboOnButton.addActionListener(_->carC.turboOn);
-
-
-
+        turboOnButton.addActionListener(_->carC.turboOn());
+        turboOffButton.addActionListener(_->carC.turboOff());
+        lowerBedButton.addActionListener(_->carC.lowerBed());
+        RaiseBedButton.addActionListener(_->carC.raiseBed());
         // Make the frame pack all it's components by respecting the sizes if possible.
         this.pack();
 
@@ -118,8 +119,8 @@ public class CarView extends JFrame{
         // Make sure the frame exits when "x" is pressed
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-    public void updateCars(ArrayList<Vehicle> cars) {
-        drawPanel.setCars(cars);
+    public void updateCars(ArrayList<Positionable> objects) {
+        drawPanel.setPosObjects(objects);
         drawPanel.repaint();
     }
 }

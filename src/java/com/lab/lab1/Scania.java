@@ -20,25 +20,25 @@ public class Scania extends Truck {
     }
 
 
-    public void setRampUp(double amount) {
+    public void setRampdown() {
         if (getCurrentSpeed() == 0) {
-            scaniaLift.raiseRamp();
+            scaniaLift.lowerRamp();
         } else {
-            System.out.println("src.java.com.lab.Vehicle moving, cannot raise platform");
+            System.out.println("Vehicle moving, cannot lower platform");
         }
     }
 
-    public void setRampDown() {
-        scaniaLift.lowerRamp();
+    public void setRampup() {
+        scaniaLift.raiseRamp();
     }
 
     @Override
     public void move(){
-        if (scaniaLift.getAngle() == 0) {
+        if (getAngle() == 0) {
             super.move();
         }
         else {
-            System.out.println("Platform raised, cannot move.");
+            System.out.println("Platform lowered, cannot move.");
         }
     }
 }

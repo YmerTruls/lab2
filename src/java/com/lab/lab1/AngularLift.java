@@ -13,13 +13,13 @@ public class AngularLift implements AngledRamp {
 
     }
 
-    public void raiseRamp() {
-        if (angle > maxAngle){
+    public void lowerRamp() {
+        if (angle <= maxAngle){
             angle += 10;
         }
     }
-    public void lowerRamp(){
-        if (angle < minAngle) {
+    public void raiseRamp(){
+        if (angle > minAngle) {
             angle -= 10;
         }
     }

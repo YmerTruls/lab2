@@ -1,5 +1,5 @@
 package src.java.com.lab.draw;
-import src.java.com.lab.lab1.Vehicle;
+import src.java.com.lab.lab1.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -12,9 +12,9 @@ import java.util.ArrayList;
 
 public class DrawPanel extends JPanel{
 
-    private final HashMap<String, BufferedImage> carImages = new HashMap<>();
-    private ArrayList<Vehicle> cars = new ArrayList<>();
-    private final HashMap<Vehicle, Point> carPositions = new HashMap<>();
+    private final HashMap<String, BufferedImage> posObjectImages = new HashMap<>();
+    private ArrayList<Positionable> posObjects = new ArrayList<>();
+    private final HashMap<Positionable, Point> posObjectsPositions = new HashMap<>();
 
     // Initializes the panel and reads the images
     public DrawPanel(int x, int y) {
@@ -22,28 +22,29 @@ public class DrawPanel extends JPanel{
         this.setPreferredSize(new Dimension(x, y));
         this.setBackground(Color.green);
         loadCarImages();
-
     }
 
     // TODO: Make this general for all cars
-    public void moveit(Vehicle car, int x, int y){
-        carPositions.put(car, new Point(x,y));
+    public void moveit(Positionable object, int x, int y){
+        posObjectsPositions.put(object, new Point(x,y));
         repaint();
     }
-    public void setCars(ArrayList<Vehicle> cars) {
-        this.cars = cars;
+    public void setPosObjects(ArrayList<Positionable> objects) {
+        this.posObjects = objects;
         // Initialize positions if they don't exist
-        for (Vehicle car : cars) {
-            carPositions.putIfAbsent(car, new Point((int) car.getXPos(), (int) car.getYPos()));
+        for (Positionable object : objects) {
+            posObjectsPositions.putIfAbsent(object, new Point((int) object.getXPos(), (int) object.getYPos()));
         }
         repaint();
     }
+
     private void loadCarImages() {
         try {
-            carImages.put("Volvo240", ImageIO.read(DrawPanel.class.getResourceAsStream("pics/Volvo240.jpg")));
-            carImages.put("Saab95", ImageIO.read(DrawPanel.class.getResourceAsStream("pics/Saab95.jpg")));
-            carImages.put("Scania", ImageIO.read(DrawPanel.class.getResourceAsStream("pics/Scania.jpg")));
-            carImages.put("DAFFXH", ImageIO.read(DrawPanel.class.getResourceAsStream("pics/DAFFXH.jpg")));
+            posObjectImages.put("Volvo240", ImageIO.read(DrawPanel.class.getResourceAsStream("pics/Volvo240.jpg")));
+            posObjectImages.put("Saab95", ImageIO.read(DrawPanel.class.getResourceAsStream("pics/Saab95.jpg")));
+            posObjectImages.put("Scania", ImageIO.read(DrawPanel.class.getResourceAsStream("pics/Scania.jpg")));
+            posObjectImages.put("DAFFXH", ImageIO.read(DrawPanel.class.getResourceAsStream("pics/DAFFXH.jpg")));
+            posObjectImages.put("VolvoWorkshop", ImageIO.read(DrawPanel.class.getResourceAsStream("pics/VolvoWorkshop.jpg")));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -54,9 +55,9 @@ public class DrawPanel extends JPanel{
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (Vehicle car : cars) {
-            BufferedImage carImage = carImages.get(car.getModelName());
-            Point position = carPositions.getOrDefault(car, new Point(0, 0));
+        for (Positionable object : posObjects) {
+            BufferedImage carImage = posObjectImages.get(object.getModelName());
+            Point position = posObjectsPositions.getOrDefault(object, new Point(0, 0));
             if (carImage != null) {
                 g.drawImage(carImage, position.x, position.y, null);
             }

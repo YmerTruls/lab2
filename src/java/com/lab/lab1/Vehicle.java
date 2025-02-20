@@ -103,8 +103,6 @@ public abstract class Vehicle implements Movable {
     // when 5 set to one, when 0 set to 4
 
     public void move(){
-        System.out.println("Move()");
-
         switch(getCurrentDirection()){
             case 1 ->
                     xPos += currentSpeed;
@@ -117,8 +115,9 @@ public abstract class Vehicle implements Movable {
             default -> throw new
                     IllegalStateException("Unexpected value (getCurrentDirection): " + getCurrentDirection());
         }
-        System.out.println("xPos: " + xPos + this);
-        System.out.println("yPos: " + yPos + this);
+        if (!getEngineState()){
+            currentSpeed *= 0.95;
+        }
     }
 
     public void gas(double amount){

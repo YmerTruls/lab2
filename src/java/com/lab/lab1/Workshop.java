@@ -7,12 +7,14 @@ public abstract class Workshop<T extends Vehicle> implements Positionable {
     private final double XPos;
     private final double YPos;
     private final ArrayList<T> loadedCars;
+    private final String name;
 
-    public Workshop(int capacity, double XPos, double YPos) {
+    public Workshop(int capacity, double XPos, double YPos, String name) {
         this.loadedCars = new ArrayList<>();
         this.capacity = capacity;
         this.XPos = XPos;
         this.YPos = YPos;
+        this.name = name;
 
     }
 
@@ -23,12 +25,14 @@ public abstract class Workshop<T extends Vehicle> implements Positionable {
         return XPos;
     }
 
+
     public void load(T vehicleInWorkshop) {
         if(loadedCars.size() < capacity &&
-                Math.abs(vehicleInWorkshop.getXPos() - getXPos()) < 10 &&
-                Math.abs(vehicleInWorkshop.getYPos() - getYPos()) < 10 &&
-                vehicleInWorkshop.getCurrentSpeed() == 0 &&
+                Math.abs(vehicleInWorkshop.getXPos() - getXPos()) < 50 &&
+                Math.abs(vehicleInWorkshop.getYPos() - getYPos()) < 50 &&
+                vehicleInWorkshop.getCurrentSpeed() == 1 &&
                 !loadedCars.contains(vehicleInWorkshop)) {
+            System.out.println("Car Loaded");
 
             loadedCars.add(vehicleInWorkshop);
             vehicleInWorkshop.moveWith(this);
@@ -49,5 +53,8 @@ public abstract class Workshop<T extends Vehicle> implements Positionable {
 
     public ArrayList<T> getLoadedCars() {
         return loadedCars;
+    }
+    public String getModelName(){
+        return name;
     }
 }
