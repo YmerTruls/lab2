@@ -70,7 +70,7 @@ public abstract class Vehicle implements Movable {
         System.out.println("Engine State: " + engineState);
     }
     public boolean getEngineState(){ return engineState; }
-    public void setCurrentDirection(int direction){ currentDirection = direction; }
+    private void setCurrentDirection(int direction){ currentDirection = direction; }
     public int getCurrentDirection(){
         return currentDirection;
     }
