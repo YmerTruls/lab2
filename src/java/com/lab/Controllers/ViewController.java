@@ -1,10 +1,5 @@
 package src.java.com.lab.Controllers;
 
-/*
-* This class represents the Controller part in the MVC pattern.
-* Its responsibilities are to listen to the View and responds in an appropriate manner by
-* modifying the model state and the updating the view.
- */
 
 public class ViewController {
     private final SimulationController simulationController;

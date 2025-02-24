@@ -86,8 +86,8 @@ public class SimulationController {
                 .filter(v -> v instanceof Scania)
                 .map(v -> (Scania) v)
                 .forEach(scania -> {
-                    if (lower) ((Scania) scania).setRampdown();
-                    else ((Scania) scania).setRampup();
+                    if (lower) scania.setRampdown();
+                    else scania.setRampup();
                 });
     }
 

@@ -23,7 +23,7 @@ public class Application {
 
             simulationController.addListener(view);
 
-            Timer timer = new Timer(50, e -> simulationController.update());
+            Timer timer = new Timer(50, _ -> simulationController.update());
             timer.start();
         });
     }
