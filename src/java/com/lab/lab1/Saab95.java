@@ -1,7 +1,9 @@
 package src.java.com.lab.lab1;
+import src.java.com.lab.Interfaces.HasTurbo;
+
 import java.awt.*;
 
-public class Saab95 extends Car implements HasTurbo{
+public class Saab95 extends Car implements HasTurbo {
 
     private boolean turboOn;
 
@@ -9,7 +11,7 @@ public class Saab95 extends Car implements HasTurbo{
         super(2, 125, Color.red,
                 "Saab95", xPos, yPos);
         setTurboOff();
-        setEngineState(false);
+        stopEngine();
     }
 
     public void setTurboOn(){

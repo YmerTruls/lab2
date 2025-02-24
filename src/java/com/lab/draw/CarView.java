@@ -1,126 +1,96 @@
 package src.java.com.lab.draw;
 
-import src.java.com.lab.lab1.Positionable;
-
+import src.java.com.lab.Controllers.ViewController;
+import src.java.com.lab.Interfaces.SimulationListener;
+import src.java.com.lab.Interfaces.Positionable;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- * This class represents the full view of the MVC pattern of your car simulator.
- * It initializes with being center on the screen and attaching its controller in its state.
- * It communicates with the Controller by calling methods of it when an action fires of in
- * each of its components.
- **/
+public class CarView extends JFrame implements SimulationListener {
 
-public class CarView extends JFrame{
-    private static final int X = 800;
-    private static final int Y = 800;
-    private static final int drawPanelX = X;
-    private static final int drawPanelY = Y-240;
-    // The controller member
-    CarController carC;
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 800;
 
-    DrawPanel drawPanel = new DrawPanel(drawPanelX, drawPanelY); // Draw panel is where the cars move around.
+    private final ViewController viewController;
+    private final DrawPanel drawPanel;
 
-    JPanel controlPanel = new JPanel();
+    private int gasAmount;
 
-    JPanel gasPanel = new JPanel();
-    JSpinner gasSpinner = new JSpinner();
-    int gasAmount = 0;
-    JLabel gasLabel = new JLabel("Amount of gas");
+    public CarView(String title, ViewController controller) {
+        this.viewController = controller;
+        this.drawPanel = new DrawPanel(WIDTH, HEIGHT - 240);
 
-    JButton gasButton = new JButton("Gas");
-    JButton brakeButton = new JButton("Brake");
-    JButton turboOnButton = new JButton("Saab Turbo on");
-    JButton turboOffButton = new JButton("Saab Turbo off");
-    JButton RaiseBedButton = new JButton("Raise Lift Bed");
-    JButton lowerBedButton = new JButton("Lower Lift Bed");
-
-    JButton startButton = new JButton("Start all cars");
-    JButton stopButton = new JButton("Stop all cars");
-
-    // Constructor
-    public CarView(String framename, CarController cc){
-        this.carC = cc;
-        initComponents(framename);
+        initUI(title);
     }
 
-    int getDrawPanelX(){ return drawPanelX; }
-    int getDrawPanelY(){ return drawPanelY; }
+    private void initUI(String title) {
+        setTitle(title);
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
-    // Sets everything in place and fits everything
-    // TODO: Take a good look and make sure you understand how these methods and components work
-    private void initComponents(String title) {
+        add(drawPanel);
 
-        this.setTitle(title);
-        this.setPreferredSize(new Dimension(X,Y));
-        this.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-
-        this.add(drawPanel);
-
-        SpinnerModel spinnerModel =
-                new SpinnerNumberModel(0, //initial value
-                        0, //min
-                        100, //max
-                        1);//step
-        gasSpinner = new JSpinner(spinnerModel);
+        JPanel gasPanel = new JPanel(new BorderLayout());
+        gasPanel.add(new JLabel("Amount of gas"), BorderLayout.NORTH);
+        JSpinner gasSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
         gasSpinner.addChangeListener(e -> gasAmount = (int) ((JSpinner)e.getSource()).getValue());
+        gasPanel.add(gasSpinner, BorderLayout.SOUTH);
+        add(gasPanel);
 
-        gasPanel.setLayout(new BorderLayout());
-        gasPanel.add(gasLabel, BorderLayout.PAGE_START);
-        gasPanel.add(gasSpinner, BorderLayout.PAGE_END);
-
-        this.add(gasPanel);
-
-        controlPanel.setLayout(new GridLayout(2,4));
-
-        controlPanel.add(gasButton, 0);
-        controlPanel.add(turboOnButton, 1);
-        controlPanel.add(RaiseBedButton, 2);
-        controlPanel.add(brakeButton, 3);
-        controlPanel.add(turboOffButton, 4);
-        controlPanel.add(lowerBedButton, 5);
-        controlPanel.setPreferredSize(new Dimension((X/2)+4, 200));
-        this.add(controlPanel);
+        JPanel controlPanel = new JPanel(new GridLayout(2, 4));
+        addButtonsToControlPanel(controlPanel);
+        controlPanel.setPreferredSize(new Dimension(WIDTH / 2 + 4, 200));
         controlPanel.setBackground(Color.CYAN);
+        add(controlPanel);
 
+        JButton startButton = createStyledButton("Start all cars", Color.BLUE, Color.GREEN);
+        JButton stopButton = createStyledButton("Stop all cars", Color.RED, Color.BLACK);
+        startButton.addActionListener(_ -> viewController.onStartPressed());
+        stopButton.addActionListener(_ -> viewController.onStopPressed());
+        add(startButton);
+        add(stopButton);
 
-        startButton.setBackground(Color.blue);
-        startButton.setForeground(Color.green);
-        startButton.setPreferredSize(new Dimension(X/5-15,200));
-        this.add(startButton);
-
-
-        stopButton.setBackground(Color.red);
-        stopButton.setForeground(Color.black);
-        stopButton.setPreferredSize(new Dimension(X/5-15,200));
-        this.add(stopButton);
-
-        // This actionListener is for the gas button only
-        // TODO: Create more for each component as necessary
-        gasButton.addActionListener(_ -> carC.gas(gasAmount));
-        brakeButton.addActionListener(_ -> carC.brake(gasAmount));
-        startButton.addActionListener(_-> carC.startButton());
-        stopButton.addActionListener((_-> carC.stopButton()));
-        turboOnButton.addActionListener(_->carC.turboOn());
-        turboOffButton.addActionListener(_->carC.turboOff());
-        lowerBedButton.addActionListener(_->carC.lowerBed());
-        RaiseBedButton.addActionListener(_->carC.raiseBed());
-        // Make the frame pack all it's components by respecting the sizes if possible.
-        this.pack();
-
-        // Get the computer screen resolution
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        // Center the frame
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
-        // Make the frame visible
-        this.setVisible(true);
-        // Make sure the frame exits when "x" is pressed
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
-    public void updateCars(ArrayList<Positionable> objects) {
-        drawPanel.setPosObjects(objects);
-        drawPanel.repaint();
+
+    private void addButtonsToControlPanel(JPanel controlPanel) {
+        JButton gasButton = new JButton("Gas");
+        JButton brakeButton = new JButton("Brake");
+        JButton turboOnButton = new JButton("Saab Turbo on");
+        JButton turboOffButton = new JButton("Saab Turbo off");
+        JButton raiseBedButton = new JButton("Raise Lift Bed");
+        JButton lowerBedButton = new JButton("Lower Lift Bed");
+
+        gasButton.addActionListener(_-> viewController.onGasPressed(gasAmount));
+        brakeButton.addActionListener(_ -> viewController.onBrakePressed(gasAmount));
+        turboOnButton.addActionListener(_-> viewController.onTurboPressed(true));
+        turboOffButton.addActionListener(_-> viewController.onTurboPressed(false));
+        raiseBedButton.addActionListener(_-> viewController.onRampControlPressed(false));
+        lowerBedButton.addActionListener(_ -> viewController.onRampControlPressed(true));
+
+        controlPanel.add(gasButton);
+        controlPanel.add(turboOnButton);
+        controlPanel.add(raiseBedButton);
+        controlPanel.add(brakeButton);
+        controlPanel.add(turboOffButton);
+        controlPanel.add(lowerBedButton);
+    }
+
+    private JButton createStyledButton(String text, Color bg, Color fg) {
+        JButton button = new JButton(text);
+        button.setBackground(bg);
+        button.setForeground(fg);
+        button.setPreferredSize(new Dimension(WIDTH / 5 - 15, 200));
+        return button;
+    }
+
+    @Override
+    public void onSimulationUpdated(List<Positionable> posObjects) {
+        drawPanel.setPosObjects(posObjects);
     }
 }

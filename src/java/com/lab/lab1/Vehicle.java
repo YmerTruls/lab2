@@ -1,134 +1,112 @@
 package src.java.com.lab.lab1;
 
+import src.java.com.lab.Interfaces.Direction;
+import src.java.com.lab.Interfaces.Movable;
+
 import java.awt.*;
 
 public abstract class Vehicle implements Movable {
+    private final int nrDoors;
+    private final double enginePower;
+    private double currentSpeed = 0;
+    private Color color;
+    private final String modelName;
+    private boolean engineOn;
 
-    private final int nrDoors; // Number of doors on the car
-    private final double enginePower; // Engine power of the car
-    private double currentSpeed = 0; // The current speed of the car
-    private Color color; // Color of the car
-    private final String modelName; // The car model name
-    private boolean engineState;
+    private final Position position;
+    private Direction direction = Direction.EAST;
 
-    private double xPos; //X-position
-    private double yPos; //Y-position
-    private int currentDirection = 1; //current facing direction
-    public abstract double speedFactor();
-
-    public Vehicle(int nrDoors, double enginePower, Color color, String modelName, double xPos, double yPos) {
+    protected Vehicle(int nrDoors, double enginePower, Color color, String modelName, double xPos, double yPos) {
         this.nrDoors = nrDoors;
         this.enginePower = enginePower;
         this.color = color;
         this.modelName = modelName;
-        this.xPos = xPos;
-        this.yPos = yPos;
+        this.position = new Position(xPos, yPos);
     }
 
-    public double getXPos(){
-        return xPos;
-    }
-    public double getYPos() {
-        return yPos;
+    public abstract double speedFactor();
+
+    public Position getPosition() {
+        return position;
     }
 
-    private void setPosition(double xPos, double yPos) {
-        this.xPos = xPos;
-        this.yPos = yPos;
+    public Direction getDirection() {
+        return direction;
     }
 
-    public void moveRelative(Byte xAmount, Byte yAmount) {
-        setPosition(getXPos() + xAmount, getYPos() + yAmount);
+    public void setDirection(Direction direction) {
+        this.direction = direction;
     }
 
-    public void moveWith(Positionable target) {
-        setPosition(target.getXPos(), target.getYPos());
-    }
-
-    public String getModelName() {
-        return modelName;
-    }
-
-    public int getNrDoors(){
-        return nrDoors;
-    }
-    public double getEnginePower(){
-        return enginePower;
-    }
-    public double getCurrentSpeed(){
-        return currentSpeed;
-    }
-    public Color getColor(){
-        return color;
-    }
-    public void setColor(Color clr){
-        color = clr;
-    }
-
-    public void setEngineState(boolean state){
-        engineState = state;
-        System.out.println("Engine State: " + engineState);
-    }
-    public boolean getEngineState(){ return engineState; }
-    private void setCurrentDirection(int direction){ currentDirection = direction; }
-    public int getCurrentDirection(){
-        return currentDirection;
-    }
-    public void incrementSpeed(double amount) {
-        currentSpeed = Math.min(getCurrentSpeed() + speedFactor() * amount, enginePower);
-    }
-    public void decrementSpeed(double amount) {
-        currentSpeed = Math.max(getCurrentSpeed() - speedFactor() * amount, 0);
-    }
-    public void turnRight(){
-        setCurrentDirection(getCurrentDirection()-1);
-
-        if(getCurrentDirection() == 0){
-            setCurrentDirection(4);
+    public void move() {
+        switch (direction) {
+            case EAST -> position.move(currentSpeed, 0);
+            case WEST -> position.move(-currentSpeed, 0);
+            case NORTH -> position.move(0, -currentSpeed);
+            case SOUTH -> position.move(0, currentSpeed);
         }
-    }
 
-    public void turnLeft(){
-        setCurrentDirection(getCurrentDirection()+1);
-
-        if(getCurrentDirection() == 5){
-            setCurrentDirection(1);
-        }
-    }
-
-    //1: x+
-    //2: y+
-    //3: x-
-    //4: y-
-    // when 5 set to one, when 0 set to 4
-
-    public void move(){
-        switch(getCurrentDirection()){
-            case 1 ->
-                    xPos += currentSpeed;
-            case 2 ->
-                    yPos += currentSpeed;
-            case 3 ->
-                    xPos -= currentSpeed;
-            case 4 ->
-                    yPos -= currentSpeed;
-            default -> throw new
-                    IllegalStateException("Unexpected value (getCurrentDirection): " + getCurrentDirection());
-        }
-        if (!getEngineState()){
+        if (!engineOn) {
             currentSpeed *= 0.95;
         }
     }
 
-    public void gas(double amount){
-        if(0 <= amount && amount <= 1 && getEngineState()){
+    public void turnLeft() {
+        direction = direction.turnLeft();
+    }
+
+    public void turnRight() {
+        direction = direction.turnRight();
+    }
+
+    public void gas(double amount) {
+        if (engineOn && amount >= 0 && amount <= 1) {
             incrementSpeed(amount);
         }
     }
 
-    public void brake(double amount){
-        if(0 <= amount && amount <= 1){
+    public void brake(double amount) {
+        if (amount >= 0 && amount <= 1) {
             decrementSpeed(amount);
         }
     }
+
+    private void incrementSpeed(double amount) {
+        currentSpeed = Math.min(currentSpeed + speedFactor() * amount, enginePower);
+    }
+
+    private void decrementSpeed(double amount) {
+        currentSpeed = Math.max(currentSpeed - speedFactor() * amount, 0);
+    }
+
+    public void startEngine() {
+        engineOn = true;
+    }
+
+    public void stopEngine() {
+        engineOn = false;
+    }
+
+    public boolean isEngineOn() {
+        return engineOn;
+    }
+
+    public String getModelName() { return modelName;
+    }
+
+    public int getNrDoors() { return nrDoors;
+    }
+
+    public double getEnginePower() { return enginePower;
+    }
+
+    public double getCurrentSpeed() { return currentSpeed;
+    }
+
+    public Color getColor() { return color;
+    }
+
+    public void setColor(Color color) { this.color = color;
+    }
+
 }

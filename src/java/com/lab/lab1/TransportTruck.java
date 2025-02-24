@@ -1,84 +1,85 @@
 package src.java.com.lab.lab1;
 
 import java.awt.*;
+import java.util.Collections;
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class TransportTruck extends Truck {
 
     private final int capacity;
-    private final ArrayList<Car> loadedCars;
+    private final List<Car> loadedCars;
     private final OnOffLift transportLift;
 
-    public TransportTruck(int nrDoors, double enginePower, Color color, String modelName, int capacity, double xPos, double yPos) {
+    protected TransportTruck(int nrDoors, double enginePower, Color color,
+                             String modelName, int capacity, double xPos, double yPos) {
         super(nrDoors, enginePower, color, modelName, xPos, yPos);
-        this.loadedCars = new ArrayList<>();
         this.capacity = capacity;
+        this.loadedCars = new ArrayList<>();
         this.transportLift = new OnOffLift();
-        setRampDown(false);
+        transportLift.raiseRamp();
     }
 
-    public void setRampDown(boolean state){
-        if(state) {
-            if (getCurrentSpeed() == 0) {
-                transportLift.lowerRamp();
-            }
-        }
-
-        else {
-            transportLift.raiseRamp();
+    public void lowerRamp() {
+        if (getCurrentSpeed() == 0) {
+            transportLift.lowerRamp();
         }
     }
 
-    public boolean getRampDown(){
+    public void raiseRamp() {
+        transportLift.raiseRamp();
+    }
+
+    public boolean isRampLowered() {
         return transportLift.isRampLowered();
     }
+
     @Override
-    public void move(){
+    public void move() {
         super.move();
-        for (Car car : loadedCars) {
-            car.moveWith(this);
-        }
+        loadedCars.forEach(car -> car.getPosition().set(getPosition().getX(), getPosition().getY()));
     }
 
     @Override
-    public void gas(double amount){
-        if (!transportLift.isRampLowered()){
+    public void gas(double amount) {
+        if (!isRampLowered()) {
             super.gas(amount);
         }
-        else{
-            System.out.println("Ramp Down, Unable to gas.");
-        }
     }
 
-    public ArrayList<Car> getLoadedCars(){
-        return loadedCars;
+    public boolean canLoad(Car car) {
+        return isRampLowered()
+                && loadedCars.size() < capacity
+                && car.getCurrentSpeed() == 0
+                && Math.abs(car.getPosition().getX() - getPosition().getX()) < 10
+                && Math.abs(car.getPosition().getY() - getPosition().getY()) < 10
+                && !loadedCars.contains(car);
     }
 
-    public void load(Car car){
-        if(transportLift.isRampLowered() &&
-                loadedCars.size() < capacity &&
-                Math.abs(car.getXPos() - getXPos()) < 10 &&
-                Math.abs(car.getYPos() - getYPos()) < 10 &&
-                car.getCurrentSpeed() == 0 &&
-                !loadedCars.contains(car)){
-
+    public boolean load(Car car) {
+        if (canLoad(car)) {
             loadedCars.add(car);
-            car.moveWith(this);
-            car.setEngineState(false);
+            car.getPosition().set(getPosition().getX(), getPosition().getY());
+            car.stopEngine();
+            return true;
         }
+        return false;
     }
 
-    public Car unload(){
-        int size = loadedCars.size();
-        if(transportLift.isRampLowered() && size > 0){
-            Car car = loadedCars.get(size-1);
-            loadedCars.remove(size-1);
-            car.moveRelative((byte) -5,(byte) -5);
+    public boolean canUnload() {
+        return isRampLowered() && !loadedCars.isEmpty();
+    }
+
+    public Car unload() {
+        if (canUnload()) {
+            Car car = loadedCars.removeLast();
+            car.getPosition().move(-5, -5);
             return car;
         }
-        else {
-            return null;
-        }
-   }
+        return null;
+    }
 
+    public List<Car> getLoadedCars() {
+        return Collections.unmodifiableList(loadedCars);
+    }
 }

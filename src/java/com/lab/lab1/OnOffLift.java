@@ -1,5 +1,7 @@
 package src.java.com.lab.lab1;
 
+import src.java.com.lab.Interfaces.Ramp;
+
 public class OnOffLift implements Ramp {
 
     private boolean rampState;

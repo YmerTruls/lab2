@@ -1,5 +1,7 @@
 package src.java.com.lab.lab1;
 
+import src.java.com.lab.Interfaces.AngledRamp;
+
 public class AngularLift implements AngledRamp {
 
     private double angle;

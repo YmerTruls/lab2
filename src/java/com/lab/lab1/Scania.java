@@ -12,7 +12,7 @@ public class Scania extends Truck {
                 "Scania",
                 xPos, yPos);
         //System.out.println("Scania Initiated");
-        setEngineState(false);
+        stopEngine();
         scaniaLift = new AngularLift(0, 70);
     }
     public double getAngle() {
