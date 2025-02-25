@@ -72,23 +72,29 @@ public class SimulationController {
     }
 
     public void setTurbo(boolean on) {
-        vehicles.stream()
-                .filter(v -> v instanceof HasTurbo)
-                .map(v -> (HasTurbo) v)
-                .forEach(turbo -> {
-                    if (on) turbo.setTurboOn();
-                    else turbo.setTurboOff();
-                });
+        for (Vehicle object : vehicles) {
+            if (object instanceof HasTurbo) {
+                if (on){
+                    ((HasTurbo) object).setTurboOn();
+                }
+                else {
+                    ((HasTurbo) object).setTurboOff();
+                }
+            }
+        }
     }
 
     public void setScaniaRamp(boolean lower) {
-        vehicles.stream()
-                .filter(v -> v instanceof Scania)
-                .map(v -> (Scania) v)
-                .forEach(scania -> {
-                    if (lower) scania.setRampdown();
-                    else scania.setRampup();
-                });
+        for (Vehicle object : vehicles) {
+            if (object instanceof Scania) {
+                if (lower) {
+                    ((Scania) object).setRampdown();
+                }
+                else {
+                    ((Scania) object).setRampup();
+                }
+            }
+        }
     }
 
     public void startAllEngines() {
