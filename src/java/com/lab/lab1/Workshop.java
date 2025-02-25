@@ -30,19 +30,21 @@ public abstract class Workshop<T extends Vehicle> implements Positionable {
         if(loadedCars.size() < capacity &&
                 Math.abs(vehicleInWorkshop.getXPos() - getXPos()) < 50 &&
                 Math.abs(vehicleInWorkshop.getYPos() - getYPos()) < 50 &&
-                vehicleInWorkshop.getCurrentSpeed() == 1 &&
+                vehicleInWorkshop.getCurrentSpeed() == 0 &&
                 !loadedCars.contains(vehicleInWorkshop)) {
             System.out.println("Car Loaded");
 
             loadedCars.add(vehicleInWorkshop);
             vehicleInWorkshop.moveWith(this);
             vehicleInWorkshop.setEngineState(false);
+            vehicleInWorkshop.setLoaded(true);
         }
     }
 
     public T unload(T vehicleInWorkshop) {
         if (loadedCars.remove(vehicleInWorkshop)) {
             vehicleInWorkshop.moveRelative((byte) -5, (byte) -5);
+            vehicleInWorkshop.setLoaded(false);
             return vehicleInWorkshop;
         }
         else{

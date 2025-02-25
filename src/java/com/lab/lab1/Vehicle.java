@@ -10,6 +10,7 @@ public abstract class Vehicle implements Movable {
     private Color color; // Color of the car
     private final String modelName; // The car model name
     private boolean engineState;
+    public boolean isloaded;
 
     private double xPos; //X-position
     private double yPos; //Y-position
@@ -48,7 +49,12 @@ public abstract class Vehicle implements Movable {
     public String getModelName() {
         return modelName;
     }
-
+    public void setLoaded(boolean state) {
+        isloaded = state;
+    }
+    public boolean isLoaded() {
+        return isloaded;
+    }
     public int getNrDoors(){
         return nrDoors;
     }
@@ -66,8 +72,13 @@ public abstract class Vehicle implements Movable {
     }
 
     public void setEngineState(boolean state){
-        engineState = state;
-        System.out.println("Engine State: " + engineState);
+       if (!isLoaded()) {
+           engineState = state;
+           System.out.println("Engine State: " + engineState);
+       }
+       else {
+           engineState = false;
+       }
     }
     public boolean getEngineState(){ return engineState; }
     private void setCurrentDirection(int direction){ currentDirection = direction; }
@@ -117,6 +128,9 @@ public abstract class Vehicle implements Movable {
         }
         if (!getEngineState()){
             currentSpeed *= 0.95;
+            if (getCurrentSpeed() < 1){
+                currentSpeed = 0;
+            }
         }
     }
 
