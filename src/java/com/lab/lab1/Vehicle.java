@@ -1,8 +1,20 @@
 package src.java.com.lab.lab1;
 
+import src.java.com.lab.Interfaces.Direction;
+import src.java.com.lab.Interfaces.Movable;
+
 import java.awt.*;
 
 public abstract class Vehicle implements Movable {
+    private final int nrDoors;
+    private final double enginePower;
+    private double currentSpeed = 0;
+    private Color color;
+    private final String modelName;
+    private boolean engineOn;
+
+    private final Position position;
+    private Direction direction = Direction.EAST;
 
     private final int nrDoors; // Number of doors on the car
     private final double enginePower; // Engine power of the car
@@ -14,41 +26,46 @@ public abstract class Vehicle implements Movable {
 
     private double xPos; //X-position
     private double yPos; //Y-position
-    private int currentDirection = 1; //current facing direction
     public abstract double speedFactor();
 
-    public Vehicle(int nrDoors, double enginePower, Color color, String modelName, double xPos, double yPos) {
+    protected Vehicle(int nrDoors, double enginePower, Color color, String modelName, double xPos, double yPos) {
         this.nrDoors = nrDoors;
         this.enginePower = enginePower;
         this.color = color;
         this.modelName = modelName;
-        this.xPos = xPos;
-        this.yPos = yPos;
+        this.position = new Position(xPos, yPos);
     }
 
-    public double getXPos(){
-        return xPos;
-    }
-    public double getYPos() {
-        return yPos;
+    public abstract double speedFactor();
+
+    public Position getPosition() {
+        return position;
     }
 
-    private void setPosition(double xPos, double yPos) {
-        this.xPos = xPos;
-        this.yPos = yPos;
+    public Direction getDirection() {
+        return direction;
     }
 
-    public void moveRelative(Byte xAmount, Byte yAmount) {
-        setPosition(getXPos() + xAmount, getYPos() + yAmount);
+    public void setDirection(Direction direction) {
+        this.direction = direction;
     }
 
-    public void moveWith(Positionable target) {
-        setPosition(target.getXPos(), target.getYPos());
+    public void move() {
+        switch (direction) {
+            case EAST -> position.move(currentSpeed, 0);
+            case WEST -> position.move(-currentSpeed, 0);
+            case NORTH -> position.move(0, -currentSpeed);
+            case SOUTH -> position.move(0, currentSpeed);
+        }
+
+        if (!engineOn) {
+            currentSpeed *= 0.95;
+        }
     }
 
-    public String getModelName() {
-        return modelName;
-    }
+    public void turnLeft() {
+        direction = direction.turnLeft();
+
     public void setLoaded(boolean state) {
         isloaded = state;
     }
@@ -58,18 +75,30 @@ public abstract class Vehicle implements Movable {
     public int getNrDoors(){
         return nrDoors;
     }
-    public double getEnginePower(){
-        return enginePower;
+
+    public void turnRight() {
+        direction = direction.turnRight();
     }
-    public double getCurrentSpeed(){
-        return currentSpeed;
+
+    public void gas(double amount) {
+        if (engineOn && amount >= 0 && amount <= 1) {
+            incrementSpeed(amount);
+        }
     }
-    public Color getColor(){
-        return color;
+
+    public void brake(double amount) {
+        if (amount >= 0 && amount <= 1) {
+            decrementSpeed(amount);
+        }
     }
-    public void setColor(Color clr){
-        color = clr;
+
+    private void incrementSpeed(double amount) {
+        currentSpeed = Math.min(currentSpeed + speedFactor() * amount, enginePower);
     }
+
+
+    private void decrementSpeed(double amount) {
+        currentSpeed = Math.max(currentSpeed - speedFactor() * amount, 0);
 
     public void setEngineState(boolean state){
        if (!isLoaded()) {
@@ -79,33 +108,24 @@ public abstract class Vehicle implements Movable {
        else {
            engineState = false;
        }
-    }
-    public boolean getEngineState(){ return engineState; }
-    private void setCurrentDirection(int direction){ currentDirection = direction; }
-    public int getCurrentDirection(){
-        return currentDirection;
-    }
-    public void incrementSpeed(double amount) {
-        currentSpeed = Math.min(getCurrentSpeed() + speedFactor() * amount, enginePower);
-    }
-    public void decrementSpeed(double amount) {
-        currentSpeed = Math.max(getCurrentSpeed() - speedFactor() * amount, 0);
-    }
-    public void turnRight(){
-        setCurrentDirection(getCurrentDirection()-1);
 
-        if(getCurrentDirection() == 0){
-            setCurrentDirection(4);
-        }
     }
 
-    public void turnLeft(){
-        setCurrentDirection(getCurrentDirection()+1);
-
-        if(getCurrentDirection() == 5){
-            setCurrentDirection(1);
-        }
+    public boolean isEngineOn() {
+        return engineOn;
     }
+
+    public String getModelName() { return modelName;
+    }
+
+    public int getNrDoors() { return nrDoors;
+    }
+
+    public double getEnginePower() { return enginePower;
+    }
+
+
+    public double getCurrentSpeed() { return currentSpeed;
 
     //1: x+
     //2: y+
@@ -132,17 +152,13 @@ public abstract class Vehicle implements Movable {
                 currentSpeed = 0;
             }
         }
+
     }
 
-    public void gas(double amount){
-        if(0 <= amount && amount <= 1 && getEngineState()){
-            incrementSpeed(amount);
-        }
+    public Color getColor() { return color;
     }
 
-    public void brake(double amount){
-        if(0 <= amount && amount <= 1){
-            decrementSpeed(amount);
-        }
+    public void setColor(Color color) { this.color = color;
     }
+
 }

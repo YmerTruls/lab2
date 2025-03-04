@@ -1,4 +1,4 @@
-package src.java.com.lab.lab1;
+package src.java.com.lab.Interfaces;
 
 public interface HasTurbo {
     void setTurboOn();

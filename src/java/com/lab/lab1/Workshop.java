@@ -1,62 +1,64 @@
 package src.java.com.lab.lab1;
+
+import src.java.com.lab.Interfaces.Positionable;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class Workshop<T extends Vehicle> implements Positionable {
 
     private final int capacity;
-    private final double XPos;
-    private final double YPos;
-    private final ArrayList<T> loadedCars;
+    private final Position position;
+    private final List<T> loadedVehicles;
     private final String name;
 
-    public Workshop(int capacity, double XPos, double YPos, String name) {
-        this.loadedCars = new ArrayList<>();
+    protected Workshop(int capacity, double xPos, double yPos, String name) {
         this.capacity = capacity;
-        this.XPos = XPos;
-        this.YPos = YPos;
+        this.position = new Position(xPos, yPos);
         this.name = name;
-
+        this.loadedVehicles = new ArrayList<>();
     }
 
-    public double getYPos() {
-        return YPos;
-    }
-    public double getXPos() {
-        return XPos;
+    public Position getPosition() {
+        return position;
     }
 
-
-    public void load(T vehicleInWorkshop) {
-        if(loadedCars.size() < capacity &&
-                Math.abs(vehicleInWorkshop.getXPos() - getXPos()) < 50 &&
-                Math.abs(vehicleInWorkshop.getYPos() - getYPos()) < 50 &&
-                vehicleInWorkshop.getCurrentSpeed() == 0 &&
-                !loadedCars.contains(vehicleInWorkshop)) {
-            System.out.println("Car Loaded");
-
-            loadedCars.add(vehicleInWorkshop);
-            vehicleInWorkshop.moveWith(this);
-            vehicleInWorkshop.setEngineState(false);
-            vehicleInWorkshop.setLoaded(true);
-        }
-    }
-
-    public T unload(T vehicleInWorkshop) {
-        if (loadedCars.remove(vehicleInWorkshop)) {
-            vehicleInWorkshop.moveRelative((byte) -5, (byte) -5);
-            vehicleInWorkshop.setLoaded(false);
-            return vehicleInWorkshop;
-        }
-        else{
-            System.out.println("Car not found in workshop");
-            return null;
-        }
-    }
-
-    public ArrayList<T> getLoadedCars() {
-        return loadedCars;
-    }
-    public String getModelName(){
+    public String getModelName() {
         return name;
+    }
+
+    public boolean canLoad(T vehicle) {
+        return loadedVehicles.size() < capacity
+                && Math.abs(vehicle.getPosition().getX() - getPosition().getX()) < 50
+                && Math.abs(vehicle.getPosition().getY() - getPosition().getY()) < 50
+                && vehicle.getCurrentSpeed() == 0
+                && !loadedVehicles.contains(vehicle);
+    }
+
+    public boolean load(T vehicle) {
+        if (canLoad(vehicle)) {
+            loadedVehicles.add(vehicle);
+            vehicle.getPosition().set(getPosition().getX(), getPosition().getY());
+            vehicle.stopEngine();
+            vehicle.setEngineState(false);
+            vehicle.setLoaded(true);  
+            return true;
+        }
+        return false;
+    }
+
+    public boolean unload(T vehicle) {
+        if (loadedVehicles.remove(vehicle)) {
+            vehicle.getPosition().move(-5, -5); // Move vehicle slightly away from workshop
+            vehicleInWorkshop.setLoaded(false);
+            return true;
+
+        }
+        return false;
+    }
+
+    public List<T> getLoadedVehicles() {
+        return Collections.unmodifiableList(loadedVehicles);
     }
 }
