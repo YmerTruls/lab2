@@ -16,6 +16,18 @@ public abstract class Vehicle implements Movable {
     private final Position position;
     private Direction direction = Direction.EAST;
 
+    private final int nrDoors; // Number of doors on the car
+    private final double enginePower; // Engine power of the car
+    private double currentSpeed = 0; // The current speed of the car
+    private Color color; // Color of the car
+    private final String modelName; // The car model name
+    private boolean engineState;
+    public boolean isloaded;
+
+    private double xPos; //X-position
+    private double yPos; //Y-position
+    public abstract double speedFactor();
+
     protected Vehicle(int nrDoors, double enginePower, Color color, String modelName, double xPos, double yPos) {
         this.nrDoors = nrDoors;
         this.enginePower = enginePower;
@@ -53,6 +65,15 @@ public abstract class Vehicle implements Movable {
 
     public void turnLeft() {
         direction = direction.turnLeft();
+
+    public void setLoaded(boolean state) {
+        isloaded = state;
+    }
+    public boolean isLoaded() {
+        return isloaded;
+    }
+    public int getNrDoors(){
+        return nrDoors;
     }
 
     public void turnRight() {
@@ -75,16 +96,19 @@ public abstract class Vehicle implements Movable {
         currentSpeed = Math.min(currentSpeed + speedFactor() * amount, enginePower);
     }
 
+
     private void decrementSpeed(double amount) {
         currentSpeed = Math.max(currentSpeed - speedFactor() * amount, 0);
-    }
 
-    public void startEngine() {
-        engineOn = true;
-    }
+    public void setEngineState(boolean state){
+       if (!isLoaded()) {
+           engineState = state;
+           System.out.println("Engine State: " + engineState);
+       }
+       else {
+           engineState = false;
+       }
 
-    public void stopEngine() {
-        engineOn = false;
     }
 
     public boolean isEngineOn() {
@@ -100,7 +124,35 @@ public abstract class Vehicle implements Movable {
     public double getEnginePower() { return enginePower;
     }
 
+
     public double getCurrentSpeed() { return currentSpeed;
+
+    //1: x+
+    //2: y+
+    //3: x-
+    //4: y-
+    // when 5 set to one, when 0 set to 4
+
+    public void move(){
+        switch(getCurrentDirection()){
+            case 1 ->
+                    xPos += currentSpeed;
+            case 2 ->
+                    yPos += currentSpeed;
+            case 3 ->
+                    xPos -= currentSpeed;
+            case 4 ->
+                    yPos -= currentSpeed;
+            default -> throw new
+                    IllegalStateException("Unexpected value (getCurrentDirection): " + getCurrentDirection());
+        }
+        if (!getEngineState()){
+            currentSpeed *= 0.95;
+            if (getCurrentSpeed() < 1){
+                currentSpeed = 0;
+            }
+        }
+
     }
 
     public Color getColor() { return color;

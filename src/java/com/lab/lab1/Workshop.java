@@ -41,6 +41,8 @@ public abstract class Workshop<T extends Vehicle> implements Positionable {
             loadedVehicles.add(vehicle);
             vehicle.getPosition().set(getPosition().getX(), getPosition().getY());
             vehicle.stopEngine();
+            vehicle.setEngineState(false);
+            vehicle.setLoaded(true);  
             return true;
         }
         return false;
@@ -49,7 +51,9 @@ public abstract class Workshop<T extends Vehicle> implements Positionable {
     public boolean unload(T vehicle) {
         if (loadedVehicles.remove(vehicle)) {
             vehicle.getPosition().move(-5, -5); // Move vehicle slightly away from workshop
+            vehicleInWorkshop.setLoaded(false);
             return true;
+
         }
         return false;
     }
