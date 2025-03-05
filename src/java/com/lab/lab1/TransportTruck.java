@@ -60,7 +60,7 @@ public abstract class TransportTruck extends Truck {
         if (canLoad(car)) {
             loadedCars.add(car);
             car.getPosition().set(getPosition().getX(), getPosition().getY());
-            car.stopEngine();
+            car.EngineOff();
             return true;
         }
         return false;

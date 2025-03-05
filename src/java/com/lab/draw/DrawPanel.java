@@ -1,7 +1,5 @@
 package src.java.com.lab.draw;
 
-import src.java.com.lab.Interfaces.Positionable;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +11,7 @@ import java.util.List;
 public class DrawPanel extends JPanel {
 
     private final HashMap<String, BufferedImage> objectImages = new HashMap<>();
-    private List<Positionable> objects;
+    private List<RenderObject> objects;
 
     public DrawPanel(int width, int height) {
         setPreferredSize(new Dimension(width, height));
@@ -22,7 +20,7 @@ public class DrawPanel extends JPanel {
         loadObjectImages();
     }
 
-    public void setPosObjects(List<Positionable> objects) {
+    public void setRenderObjects(List<RenderObject> objects) {
         this.objects = objects;
         repaint();
     }
@@ -46,12 +44,10 @@ public class DrawPanel extends JPanel {
 
         if (objects == null) return;
 
-        for (Positionable object : objects) {
+        for (RenderObject object : objects) { // ✅ Now only using RenderObject
             BufferedImage image = objectImages.get(object.getModelName());
             if (image != null) {
-                int x = (int) Math.round(object.getPosition().getX());
-                int y = (int) Math.round(object.getPosition().getY());
-                g.drawImage(image, x, y, null);
+                g.drawImage(image, object.getX(), object.getY(), null);
             }
         }
     }

@@ -1,24 +1,22 @@
 package src.java.com.lab.draw;
 
 import src.java.com.lab.Controllers.ViewController;
-import src.java.com.lab.Interfaces.SimulationListener;
-import src.java.com.lab.Interfaces.Positionable;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
+
 import java.util.List;
 
-public class CarView extends JFrame implements SimulationListener {
+public class View extends JFrame {
 
     private static final int WIDTH = 800;
     private static final int HEIGHT = 800;
 
-    private final ViewController viewController;
+    private ViewController viewController;
     private final DrawPanel drawPanel;
 
     private int gasAmount;
 
-    public CarView(String title, ViewController controller) {
+    public View(String title, ViewController controller) {
         this.viewController = controller;
         this.drawPanel = new DrawPanel(WIDTH, HEIGHT - 240);
 
@@ -89,8 +87,10 @@ public class CarView extends JFrame implements SimulationListener {
         return button;
     }
 
-    @Override
-    public void onSimulationUpdated(List<Positionable> posObjects) {
-        drawPanel.setPosObjects(posObjects);
+    public void updateView(List<RenderObject> renderObjects) {
+        drawPanel.setRenderObjects(renderObjects);
+    }
+    public void setViewController(ViewController controller) {
+        this.viewController = controller;
     }
 }

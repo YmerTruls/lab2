@@ -11,7 +11,6 @@ public class Saab95 extends Car implements HasTurbo {
         super(2, 125, Color.red,
                 "Saab95", xPos, yPos);
         setTurboOff();
-        stopEngine();
     }
 
     public void setTurboOn(){

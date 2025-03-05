@@ -1,6 +1,6 @@
 package src.java.com.lab.Application;
 
-import src.java.com.lab.Controllers.SimulationController;
+import src.java.com.lab.Controllers.ModelFacade;
 import src.java.com.lab.Controllers.ViewController;
 import src.java.com.lab.draw.*;
 import src.java.com.lab.lab1.*;
@@ -10,20 +10,21 @@ public class Application {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            SimulationController simulationController = new SimulationController();
+            ModelFacade modelFacade = new ModelFacade();
 
-            simulationController.addVehicle(new Volvo240(0, 0));
-            simulationController.addVehicle(new Saab95(0, 60));
-            simulationController.addVehicle(new Scania(0, 120));
-            simulationController.addVehicle(new DAFFXH(0, 180));
-            simulationController.addWorkshop(new VolvoWorkshop(600, 0));
+            modelFacade.addVehicle(new Volvo240(0, 0));
+            modelFacade.addVehicle(new Saab95(0, 60));
+            modelFacade.addVehicle(new Scania(0, 120));
+            modelFacade.addVehicle(new DAFFXH(0, 180));
+            modelFacade.addWorkshop(new VolvoWorkshop(600, 0));
 
-            ViewController viewController = new ViewController(simulationController);
-            CarView view = new CarView("Car Simulator", viewController);
+            View view = new View("Car Simulator", null);
+            ViewController viewController = new ViewController(modelFacade, view);
+            view.setViewController(viewController);
 
-            simulationController.addListener(view);
+            modelFacade.addListener(viewController);
 
-            Timer timer = new Timer(50, _ -> simulationController.update());
+            Timer timer = new Timer(50, _ -> modelFacade.update());
             timer.start();
         });
     }

@@ -1,14 +1,14 @@
 package src.java.com.lab.Controllers;
 
 import src.java.com.lab.Interfaces.HasTurbo;
-import src.java.com.lab.Interfaces.Positionable;
+import src.java.com.lab.draw.*;
 import src.java.com.lab.Interfaces.SimulationListener;
 import src.java.com.lab.lab1.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimulationController {
+public class ModelFacade {
     private final List<Vehicle> vehicles = new ArrayList<>();
     private final List<Workshop<?>> workshops = new ArrayList<>();
     private final List<SimulationListener> listeners = new ArrayList<>();
@@ -56,12 +56,25 @@ public class SimulationController {
     }
 
     private void notifyListeners() {
-        List<Positionable> positions = new ArrayList<>(vehicles);
-        positions.addAll(workshops);
+        List<RenderObject> renderObjects = new ArrayList<>();
+
+        // Add vehicles
+        for (Vehicle vehicle : vehicles) {
+            Position pos = vehicle.getPosition();
+            renderObjects.add(new RenderObject(vehicle.getModelName(), (int) pos.getX(), (int) pos.getY()));
+        }
+
+        // Add workshops
+        for (Workshop<?> workshop : workshops) {
+            Position pos = workshop.getPosition();
+            renderObjects.add(new RenderObject("VolvoWorkshop", (int) pos.getX(), (int) pos.getY()));
+        }
+
         for (SimulationListener listener : listeners) {
-            listener.onSimulationUpdated(positions);
+            listener.onSimulationUpdated(renderObjects);
         }
     }
+
 
     public void gasAll(double amount) {
         vehicles.forEach(v -> v.gas(amount));
@@ -98,11 +111,11 @@ public class SimulationController {
     }
 
     public void startAllEngines() {
-        vehicles.forEach(Vehicle::startEngine);
+        vehicles.forEach(Vehicle::EngineOn);
     }
 
     public void stopAllEngines() {
-        vehicles.forEach(Vehicle::stopEngine);
+        vehicles.forEach(Vehicle::EngineOff);
     }
 }
 

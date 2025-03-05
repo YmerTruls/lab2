@@ -1,34 +1,50 @@
 package src.java.com.lab.Controllers;
 
+import src.java.com.lab.Interfaces.SimulationListener;
+import src.java.com.lab.draw.RenderObject;
+import src.java.com.lab.draw.View;
+import java.util.List;
 
-public class ViewController {
-    private final SimulationController simulationController;
+/**
+ * ViewController now listens for simulation updates and forwards them to CarView.
+ */
+public class ViewController implements SimulationListener {
+    private final ModelFacade modelFacade;
+    private final View view;
 
-    public ViewController(SimulationController simController) {
-        this.simulationController = simController;
+    public ViewController(ModelFacade simController, View view) {
+        this.modelFacade = simController;
+        this.view = view;
+        simController.addListener(this); // Register this as a listener
     }
 
+    @Override
+    public void onSimulationUpdated(List<RenderObject> renderObjects) {
+        view.updateView(renderObjects);
+    }
+
+
     public void onGasPressed(int gasAmount) {
-        simulationController.gasAll(gasAmount / 100.0);
+        modelFacade.gasAll(gasAmount / 100.0);
     }
 
     public void onBrakePressed(int brakeAmount) {
-        simulationController.brakeAll(brakeAmount / 100.0);
+        modelFacade.brakeAll(brakeAmount / 100.0);
     }
 
     public void onTurboPressed(boolean enabled) {
-        simulationController.setTurbo(enabled);
+        modelFacade.setTurbo(enabled);
     }
 
     public void onRampControlPressed(boolean lowered) {
-        simulationController.setScaniaRamp(lowered);
+        modelFacade.setScaniaRamp(lowered);
     }
 
     public void onStartPressed() {
-        simulationController.startAllEngines();
+        modelFacade.startAllEngines();
     }
 
     public void onStopPressed() {
-        simulationController.stopAllEngines();
+        modelFacade.stopAllEngines();
     }
 }
