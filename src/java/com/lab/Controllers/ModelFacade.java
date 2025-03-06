@@ -15,6 +15,14 @@ public class ModelFacade {
 
     public void addVehicle(Vehicle vehicle) {
         vehicles.add(vehicle);
+        notifyListeners();
+    }
+    public void removeVehicle() {
+        vehicles.removeLast();
+        notifyListeners();
+    }
+    public int getVehicleCount() {
+        return vehicles.size();
     }
 
     public void addWorkshop(Workshop<?> workshop) {

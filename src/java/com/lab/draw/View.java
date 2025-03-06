@@ -63,6 +63,8 @@ public class View extends JFrame {
         JButton turboOffButton = new JButton("Saab Turbo off");
         JButton raiseBedButton = new JButton("Raise Lift Bed");
         JButton lowerBedButton = new JButton("Lower Lift Bed");
+        JButton addCarButton = new JButton("Add Car");
+        JButton removeCarButton = new JButton("Remove Car");
 
         gasButton.addActionListener(_-> viewController.onGasPressed(gasAmount));
         brakeButton.addActionListener(_ -> viewController.onBrakePressed(gasAmount));
@@ -70,6 +72,8 @@ public class View extends JFrame {
         turboOffButton.addActionListener(_-> viewController.onTurboPressed(false));
         raiseBedButton.addActionListener(_-> viewController.onRampControlPressed(false));
         lowerBedButton.addActionListener(_ -> viewController.onRampControlPressed(true));
+        addCarButton.addActionListener(_-> viewController.onAddCarPressed());
+        removeCarButton.addActionListener(_-> viewController.onRemoveCarPressed());
 
         controlPanel.add(gasButton);
         controlPanel.add(turboOnButton);
@@ -77,6 +81,8 @@ public class View extends JFrame {
         controlPanel.add(brakeButton);
         controlPanel.add(turboOffButton);
         controlPanel.add(lowerBedButton);
+        controlPanel.add(addCarButton);
+        controlPanel.add(removeCarButton);
     }
 
     private JButton createStyledButton(String text, Color bg, Color fg) {
