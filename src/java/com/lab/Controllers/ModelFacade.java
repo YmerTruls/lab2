@@ -1,5 +1,6 @@
 package src.java.com.lab.Controllers;
 
+import src.java.com.lab.Factory.VehicleFactory;
 import src.java.com.lab.Interfaces.HasTurbo;
 import src.java.com.lab.draw.*;
 import src.java.com.lab.Interfaces.SimulationListener;
@@ -20,9 +21,6 @@ public class ModelFacade {
     public void removeVehicle() {
         vehicles.removeLast();
         notifyListeners();
-    }
-    public int getVehicleCount() {
-        return vehicles.size();
     }
 
     public void addWorkshop(Workshop<?> workshop) {
@@ -124,6 +122,21 @@ public class ModelFacade {
 
     public void stopAllEngines() {
         vehicles.forEach(Vehicle::EngineOff);
+    }
+    public void addCar() {
+        if (vehicles.size() < 10) {
+            Vehicle newVehicle = VehicleFactory.createRandomVehicle();
+            addVehicle(newVehicle);
+        } else {
+            System.out.println("Car limit reached!");
+        }
+    }
+    public void removeCar() {
+        if (!vehicles.isEmpty()) {
+            removeVehicle();
+        } else {
+            System.out.println("No cars to remove!");
+        }
     }
 }
 
