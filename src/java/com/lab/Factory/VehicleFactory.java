@@ -23,7 +23,7 @@ public class VehicleFactory {
         double x = MIN_X + random.nextInt(MAX_X - MIN_X);
         double y = MIN_Y + random.nextInt(MAX_Y - MIN_Y);
 
-        String[] vehicleTypes = {"Volvo240", "Saab95", "Scania"};
+        String[] vehicleTypes = {"Volvo240", "Saab95", "Scania", "DAFFXH"};
         return createVehicle(vehicleTypes[random.nextInt(vehicleTypes.length)], x, y);
     }
 }
