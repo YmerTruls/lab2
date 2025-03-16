@@ -1,6 +1,7 @@
 package src.java.com.lab.Controllers;
 
 import src.java.com.lab.Factory.VehicleFactory;
+import src.java.com.lab.Interfaces.AngledRamp;
 import src.java.com.lab.Interfaces.HasTurbo;
 import src.java.com.lab.draw.*;
 import src.java.com.lab.Interfaces.SimulationListener;
@@ -8,6 +9,7 @@ import src.java.com.lab.lab1.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ModelFacade {
     private final List<Vehicle> vehicles = new ArrayList<>();
@@ -105,12 +107,12 @@ public class ModelFacade {
 
     public void setScaniaRamp(boolean lower) {
         for (Vehicle object : vehicles) {
-            if (object instanceof Scania) {
+            if (object instanceof AngledRamp o) {
                 if (lower) {
-                    ((Scania) object).setRampdown();
+                    o.lowerRamp();
                 }
                 else {
-                    ((Scania) object).setRampup();
+                    o.raiseRamp();
                 }
             }
         }
@@ -123,10 +125,17 @@ public class ModelFacade {
     public void stopAllEngines() {
         vehicles.forEach(Vehicle::EngineOff);
     }
-    public void addCar() {
+    public void addCar(String carName) {
         if (vehicles.size() < 10) {
-            Vehicle newVehicle = VehicleFactory.createRandomVehicle();
-            addVehicle(newVehicle);
+            if (!Objects.equals(carName, "Random")){
+                System.out.println("Adding car " + carName);
+                Vehicle newVehicle = VehicleFactory.createVehicle(carName, 0,120);
+                addVehicle(newVehicle);
+            }
+            else{
+                System.out.println("(else) Adding car  " + carName);
+                Vehicle newVehicle = VehicleFactory.createRandomVehicle();
+                addVehicle(newVehicle);}
         } else {
             System.out.println("Car limit reached!");
         }

@@ -10,6 +10,11 @@ public class View extends JFrame {
 
     private static final int WIDTH = 800;
     private static final int HEIGHT = 800;
+    private String[] carNames = {"Volvo240", "Saab95", "DAFFXH", "Scania", "Random"};
+    JComboBox<String> carSelector = new JComboBox<>(carNames);
+    String selectedVehicle = (String) carSelector.getSelectedItem();
+
+
 
     private ViewController viewController;
     private final DrawPanel drawPanel;
@@ -66,14 +71,16 @@ public class View extends JFrame {
         JButton addCarButton = new JButton("Add Car");
         JButton removeCarButton = new JButton("Remove Car");
 
+
         gasButton.addActionListener(_-> viewController.onGasPressed(gasAmount));
         brakeButton.addActionListener(_ -> viewController.onBrakePressed(gasAmount));
         turboOnButton.addActionListener(_-> viewController.onTurboPressed(true));
         turboOffButton.addActionListener(_-> viewController.onTurboPressed(false));
         raiseBedButton.addActionListener(_-> viewController.onRampControlPressed(false));
         lowerBedButton.addActionListener(_ -> viewController.onRampControlPressed(true));
-        addCarButton.addActionListener(_-> viewController.onAddCarPressed());
+        addCarButton.addActionListener(_-> viewController.onAddCarPressed(selectedVehicle));
         removeCarButton.addActionListener(_-> viewController.onRemoveCarPressed());
+        carSelector.addActionListener(_ -> selectedVehicle = carNames[carSelector.getSelectedIndex()]);
 
         controlPanel.add(gasButton);
         controlPanel.add(turboOnButton);
@@ -83,6 +90,7 @@ public class View extends JFrame {
         controlPanel.add(lowerBedButton);
         controlPanel.add(addCarButton);
         controlPanel.add(removeCarButton);
+        controlPanel.add(carSelector);
     }
 
     private JButton createStyledButton(String text, Color bg, Color fg) {

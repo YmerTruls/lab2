@@ -1,6 +1,6 @@
 package src.java.com.lab.Controllers;
 
-
+import src.java.com.lab.lab1.*;
 import src.java.com.lab.Interfaces.SimulationListener;
 import src.java.com.lab.draw.RenderObject;
 import src.java.com.lab.draw.View;
@@ -47,8 +47,9 @@ public class ViewController implements SimulationListener {
         modelFacade.stopAllEngines();
     }
 
-    public void onAddCarPressed() {
-        modelFacade.addCar();
+    public void onAddCarPressed(String carName) {
+        System.out.println("(add) Adding car " + carName);
+        modelFacade.addCar(carName);
 
     }
     public void onRemoveCarPressed() {

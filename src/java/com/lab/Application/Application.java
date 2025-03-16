@@ -2,7 +2,6 @@ package src.java.com.lab.Application;
 
 import src.java.com.lab.Controllers.ModelFacade;
 import src.java.com.lab.Controllers.ViewController;
-import src.java.com.lab.Factory.VehicleFactory;
 import src.java.com.lab.Factory.WorkshopFactory;
 import src.java.com.lab.draw.*;
 import src.java.com.lab.lab1.*;

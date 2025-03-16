@@ -1,8 +1,10 @@
 package src.java.com.lab.lab1;
 
+import src.java.com.lab.Interfaces.AngledRamp;
+
 import java.awt.Color;
 
-public class Scania extends Truck {
+public class Scania extends Truck implements AngledRamp {
 
     private final AngularLift scaniaLift;
 
@@ -19,7 +21,7 @@ public class Scania extends Truck {
     }
 
 
-    public void setRampdown() {
+    public void lowerRamp() {
         if (getCurrentSpeed() == 0) {
             scaniaLift.lowerRamp();
         } else {
@@ -27,7 +29,12 @@ public class Scania extends Truck {
         }
     }
 
-    public void setRampup() {
+    @Override
+    public boolean isRampLowered() {
+        return scaniaLift.isRampLowered();
+    }
+
+    public void raiseRamp() {
         scaniaLift.raiseRamp();
     }
 
