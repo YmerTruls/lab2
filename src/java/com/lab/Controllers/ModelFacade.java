@@ -1,12 +1,14 @@
 package src.java.com.lab.Controllers;
 
 import src.java.com.lab.Factory.VehicleFactory;
-import src.java.com.lab.Interfaces.AngledRamp;
+import src.java.com.lab.Interfaces.Ramp;
+import src.java.com.lab.State.RampState;
 import src.java.com.lab.Interfaces.HasTurbo;
 import src.java.com.lab.draw.*;
 import src.java.com.lab.Interfaces.SimulationListener;
 import src.java.com.lab.lab1.*;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -107,7 +109,7 @@ public class ModelFacade {
 
     public void setScaniaRamp(boolean lower) {
         for (Vehicle object : vehicles) {
-            if (object instanceof AngledRamp o) {
+            if (object instanceof Ramp o) {
                 if (lower) {
                     o.lowerRamp();
                 }
@@ -146,6 +148,10 @@ public class ModelFacade {
         } else {
             System.out.println("No cars to remove!");
         }
+    }
+    public void timer(){
+        Timer timer = new Timer(50, _ -> update());
+        timer.start();
     }
 }
 

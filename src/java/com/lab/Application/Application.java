@@ -19,9 +19,7 @@ public class Application {
             view.setViewController(viewController);
 
             modelFacade.addListener(viewController);
-
-            Timer timer = new Timer(50, _ -> modelFacade.update());
-            timer.start();
+            modelFacade.timer();
         });
     }
 }
